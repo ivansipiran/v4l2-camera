@@ -2,6 +2,7 @@
 #include "v4l2-multigrab.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 
 using namespace std; 
@@ -626,7 +627,7 @@ void Camera::jpegWrite(unsigned char* img, char* jpegFilename)
 /**
 	process image read
 */
-void Camera::imageProcess( char* jpegFilename)
+unsigned char* Camera::imageProcess( char* jpegFilename)
 {
 	//timestamp.tv_sec
 	//timestamp.tv_usec
@@ -638,16 +639,17 @@ void Camera::imageProcess( char* jpegFilename)
 
 	// This function it was modified to convert yuv to rgb (Y ranges from 16-235 corresponding to 0-1 brightness,U and V ranges from 16-240 corresponding -0.5-0.5, where 128 is zero)
 	yuv2rgb(width, height, src, dst);
-	printf("P2 \n");
+	//printf("P2 \n");
 
-	stringstream cc;
-	cc<<jpegFilename;
+	//stringstream cc;
+	//cc<<jpegFilename;
 	
 	// write jpeg
-	jpegWrite(dst,cc.str().c_str());
+	//jpegWrite(dst,cc.str().c_str());
 	
 	// free temporary image
-	free(dst);
+	//free(dst);
+	return dst;
 }
 
 /**
@@ -947,9 +949,12 @@ int main(int argc, char **argv)
 
 
 			unsigned char* dst = cam1.imageProcess(ss1.str().c_str());
-			cv::Mat image = cv::Mat(cvSize(ancho1, alto1), CV_8UC3, dst, cv::Mat::AUTO_STEP)
-			cv::imshow("Image", image);
+			cv::Mat image = cv::Mat(cvSize(ancho1, alto1), CV_8UC3, dst, cv::Mat::AUTO_STEP);
+			cv::Mat image2;
+			cv::cvtColor(image, image2, CV_BGR2RGB);
+			cv::imshow("Image", image2);
 			cv::waitKey(1);
+			free(dst);
 			//if (cin.get() == 's')
         	//	break;				
 			

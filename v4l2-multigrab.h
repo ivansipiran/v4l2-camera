@@ -152,7 +152,7 @@ class Camera{
             void yuv2rgb(int, int , unsigned char*, unsigned char*);
             void jpegWrite(unsigned char*, char*);
 
-            void imageProcess(char*);
+            unsigned char* imageProcess(char*);
             int frameRead(char*);
             int getFrame(char*);
 
