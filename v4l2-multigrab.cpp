@@ -1,4 +1,5 @@
 
+#include <chrono>
 #include "v4l2-multigrab.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -925,20 +926,25 @@ int main(int argc, char **argv)
 		
 	int ban1 = 1;
 	int ban2 = 1;
-	int i = 0;		
+	int n_frame = 0;		
+	auto start = std::chrono::high_resolution_clock::now();
 
 	char* name1, name2;
 	
 		for(;;){
 		
-			i++; 
-			cout<<"Iter::"<<i<<endl;
-			cout<<"_________";
+			n_frame++; 
+			if(n_frame==100){
+				auto end = std::chrono::high_resolution_clock::now();
+				auto time = std::chrono::duration_cast<chrono::seconds>(end-start);
+				cout << "FPS:" << (n_frame/ static_cast<double>(time.count()))<< endl;
+				start = end;
+				n_frames = 0;
+			}
+			
 
 			stringstream ss1;
-						
 			ss1<<filename1<<"_"<<i;
-			
 			ban1 = cam1.getFrame(ss1.str().c_str());
 
 			if(ban1==0){
