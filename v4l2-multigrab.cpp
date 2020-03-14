@@ -1,5 +1,9 @@
 
 #include "v4l2-multigrab.h"
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+
 using namespace std; 
 
 #define Min(X, Y) (((X) < (Y)) ? (X) : (Y))
@@ -914,6 +918,8 @@ int main(int argc, char **argv)
 	
 	printf("Iniciando Captura...\n");
 	cam1.captureStart();
+
+	cv::namedWindow("Image", cv::WINDOW_AUTOSIZE);
 		
 	int ban1 = 1;
 	int ban2 = 1;
@@ -939,8 +945,11 @@ int main(int argc, char **argv)
 				break;
 			}
 
-			cam1.imageProcess(ss1.str().c_str());
-		
+
+			unsigned char* dst = cam1.imageProcess(ss1.str().c_str());
+			cv::Mat image = cv::Mat(cvSize(ancho1, alto1), CV_8UC3, dst, cv::Mat::AUTO_STEP)
+			cv::imshow("Image", image);
+			cv::waitKey(1);
 			//if (cin.get() == 's')
         	//	break;				
 			
