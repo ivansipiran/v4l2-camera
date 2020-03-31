@@ -15,7 +15,7 @@
 # 1: Manual Mode
 # 3: Aperture Priority Mode
 v4l2-ctl -c exposure_auto=1 -d /dev/video0
-v4l2-ctl -c exposure_auto=1 -d /dev/video1  
+#v4l2-ctl -c exposure_auto=1 -d /dev/video1  
 
 
 

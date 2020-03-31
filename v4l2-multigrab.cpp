@@ -1,10 +1,8 @@
-
 #include <chrono>
 #include "v4l2-multigrab.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 
 using namespace std; 
 
@@ -15,7 +13,7 @@ using namespace std;
 Camera::Camera(char* vidFilename, char* devCam, int idcam, int ancho, int alto, int ratefps){
 
 		jpegFilename = vidFilename;
-		deviceName = devCam; //"/dev/video0";
+		deviceName = devCam; 
 		idCam      = idcam;
 		width      = ancho;
 		height     = alto;
@@ -115,8 +113,6 @@ void Camera::deviceOpen(char* deviceName)
 
 	
 }
-
-
 
 #ifdef IO_READ
 void Camera::readInit(unsigned int buffer_size)
@@ -545,13 +541,10 @@ void Camera::yuv2rgb(int width, int height, unsigned char* src, unsigned char* d
 			chg = Max(0, Min(255, chg));
 			chb = Max(0, Min(255, chb));
 
-			//printf("clamp\n");
-				
 			*tmp++ = (unsigned char) chr;
 			*tmp++ = (unsigned char) chg;
 			*tmp++ = (unsigned char) chb;
 
-			//printf("PUNTEROS RGB\n");
 		}
 	}
 }
@@ -630,8 +623,6 @@ void Camera::jpegWrite(unsigned char* img, char* jpegFilename)
 */
 unsigned char* Camera::imageProcess( char* jpegFilename)
 {
-	//timestamp.tv_sec
-	//timestamp.tv_usec
 	printf("P1 \n");
 
 	const void* p = buffers[buf.index].start;
@@ -640,16 +631,7 @@ unsigned char* Camera::imageProcess( char* jpegFilename)
 
 	// This function it was modified to convert yuv to rgb (Y ranges from 16-235 corresponding to 0-1 brightness,U and V ranges from 16-240 corresponding -0.5-0.5, where 128 is zero)
 	yuv2rgb(width, height, src, dst);
-	//printf("P2 \n");
-
-	//stringstream cc;
-	//cc<<jpegFilename;
 	
-	// write jpeg
-	//jpegWrite(dst,cc.str().c_str());
-	
-	// free temporary image
-	//free(dst);
 	return dst;
 }
 
@@ -666,7 +648,7 @@ int Camera::frameRead(char* jpegFilename)
 	switch (io) {
 #ifdef IO_READ
 		case IO_METHOD_READ:
-		    //printf("READ \n");
+		    
 			if (-1 == v4l2_read(fd, buffers[0].start, buffers[0].length)) {
 				switch (errno) {
 					case EAGAIN:
@@ -847,49 +829,6 @@ void Camera::deviceClose(void)
 	fd = -1;
 }
 
-/**
-	print usage information
-*/
-/*void Camera::usage(FILE* fp, int argc, char** argv)
-{
-	fprintf(fp,
-		"Usage: %s [options]\n\n"
-		"Options:\n"
-		"-d | --device name   Video device name [/dev/video0]\n"
-		"-h | --help          Print this message\n"
-		"-o | --output        Set JPEG output filename\n"
-		"-q | --quality       Set JPEG quality (0-100)\n"
-		"-m | --mmap          Use memory mapped buffers\n"
-		"-r | --read          Use read() calls\n"
-		"-u | --userptr       Use application allocated buffers\n"
-		"-W | --width         Set image width\n"
-		"-H | --height        Set image height\n"
-		"-I | --interval      Set frame interval (fps) (-1 to skip)\n"
-		"-c | --continuous    Do continous capture, stop with SIGINT.\n"
-		"-v | --version       Print version\n"
-		"",
-		argv[0]);
-	}
-
-static const char short_options [] = "d:ho:q:mruW:H:I:vc";
-
-static const struct option
-long_options [] = {
-	{ "device",     required_argument,      NULL,           'd' },
-	{ "help",       no_argument,            NULL,           'h' },
-	{ "output",     required_argument,      NULL,           'o' },
-	{ "quality",    required_argument,      NULL,           'q' },
-	{ "mmap",       no_argument,            NULL,           'm' },
-	{ "read",       no_argument,            NULL,           'r' },
-	{ "userptr",    no_argument,            NULL,           'u' },
-	{ "width",      required_argument,      NULL,           'W' },
-	{ "height",     required_argument,      NULL,           'H' },
-	{ "interval",   required_argument,      NULL,           'I' },
-	{ "version",	no_argument,		NULL,		'v' },
-	{ "continuous",	no_argument,		NULL,		'c' },
-	{ 0, 0, 0, 0 }
-};*/
-
 int main(int argc, char **argv)
 {
 
@@ -961,8 +900,7 @@ int main(int argc, char **argv)
 			cv::imshow("Image", image2);
 			cv::waitKey(1);
 			free(dst);
-			//if (cin.get() == 's')
-        	//	break;				
+						
 			
 		
 		}// from for
@@ -971,11 +909,6 @@ int main(int argc, char **argv)
 	printf("Capture Stop..\n");
 	// stop capturing
 	cam1.captureStop();
-
-
-	/*if(jpegFilenamePart != 0){ 
-		free(jpegFilename);
-	}*/
 
 	exit(EXIT_SUCCESS);
 

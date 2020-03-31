@@ -1,38 +1,3 @@
-
-/***************************************************************************
- *   v4l2grab Version 0.3                                                  *
- *   Copyright (C) 2012 by Tobias Müller                                   *
- *   Tobias_Mueller@twam.info                                              *
- *                                                                         *
- *   based on V4L2 Specification, Appendix B: Video Capture Example        *
- *   (http://v4l2spec.bytesex.org/spec/capture-example.html)               *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
- 
- /**************************************************************************
- *   Modification History                                                  *
- *                                                                         *
- *   Matthew Witherwax      21AUG2013                                      *
- *      Added ability to change frame interval (ie. frame rate/fps)        *
- * Martin Savc              7JUL2015
- *      Added support for continuous capture using SIGINT to stop.
- ***************************************************************************/
-
-// compile with all three access methods
 #if !defined(IO_READ) && !defined(IO_MMAP) && !defined(IO_USERPTR)
 #define IO_READ
 #define IO_MMAP
@@ -65,7 +30,6 @@
 #include <inttypes.h>
 
 #include "config.h"
-//#include "yuv2rgb.h"
 
 using namespace std; 
 
@@ -76,6 +40,7 @@ using namespace std;
 #endif
 
 #if defined(IO_MMAP) || defined(IO_USERPTR)
+
 // minimum number of buffers to request in VIDIOC_REQBUFS call
 #define VIDIOC_REQBUFS_COUNT 2
 #endif
@@ -105,12 +70,9 @@ static io_method        io              = IO_METHOD_MMAP;
 // global settings
 static int continuous = 0;
 static unsigned char jpegQuality = 100;
-//static char* jpegFilename = NULL;
 static char* jpegFilenamePart = NULL;
 
-
 static const char* const continuousFilenameFmt = "%s_%010"PRIu32".jpg"; 
-
 
 class Camera{
 
@@ -119,7 +81,7 @@ class Camera{
 		unsigned int    n_buffers;
 		
 		char* jpegFilename;
-		char* deviceName; //= "/dev/video0";
+		char* deviceName; 
 		int idCam;
 		int width;
 		int height;
@@ -134,7 +96,6 @@ class Camera{
 
 			void InstallSIGINTHandler();
 			void errno_exit(const char*);
-            //void StopContCapture(int);
             int  xioctl(int, void*);
 			
 			void deviceOpen(char*);
